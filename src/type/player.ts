@@ -1,21 +1,21 @@
 import {Color} from 'src/type/color';
 import * as _ from 'lodash';
-import {Card, allCardTypes, isCard} from 'src/type/card';
-import {ICountry, isCountry} from 'src/type/country';
+import {ICard, allCardTypes, isCard} from 'src/type/card';
+import {Country, isCountry} from 'src/type/country';
 import {IObjective} from 'src/type/objective';
 
 export class Player {
   cardTrades = 0;
-  countries: ICountry[] = [];
-  cards: Card[] = [];
+  countries: Country[] = [];
+  cards: ICard[] = [];
   armies = 0;
   objective: IObjective;
-  usedCards: Card[] = [];
+  usedCards: ICard[] = [];
 
   constructor(public name: string, public color: Color) {
   }
 
-  validTradeCards(cards: Card[]) {
+  validTradeCards(cards: ICard[]) {
     var cardTypes = _.map(cards, 'type');
     var are3 = cards.length === 3;
     var allDifferent = are3 && allCardTypes.every((t) => cardTypes.includes(t));
@@ -28,16 +28,16 @@ export class Player {
     return this.countries;
   }
 
-  hasCountry(country: ICountry) {
+  hasCountry(country: Country) {
     return this.countries.includes(country);
   }
 
-  addCountry(country: ICountry) {
+  addCountry(country: Country) {
     this.armies++;
     this.countries.push(country);
   }
 
-  removeCountry(country: ICountry) {
+  removeCountry(country: Country) {
     this.countries = _.without(this.countries, country);
   }
 
@@ -53,7 +53,7 @@ export class Player {
     return this.armies;
   }
 
-  addCard(card: Card) {
+  addCard(card: ICard) {
     this.cards.push(card);
   }
 
@@ -61,16 +61,16 @@ export class Player {
     return this.cards;
   }
 
-  hasCard(card: Card) {
+  hasCard(card: ICard) {
     return this.cards.includes(card);
   }
 
-  canUseCard(countryOrCard: ICountry | Card) {
+  canUseCard(countryOrCard: Country | ICard) {
     let card = this.findCard(countryOrCard);
     return !!(card && !this.usedCards.find(c => c.id === card.id ));
   }
 
-  findCard(countryOrCard: ICountry | Card): Card | null {
+  findCard(countryOrCard: Country | ICard): ICard | null {
     if (isCard(countryOrCard)) {
       return this.hasCard(countryOrCard) ? countryOrCard : null;
     } else if (isCountry(countryOrCard)){
@@ -78,7 +78,7 @@ export class Player {
     }
   }
 
-  useCard(countryOrCard: ICountry | Card) {
+  useCard(countryOrCard: Country | ICard) {
     let card = this.findCard(countryOrCard);
 
     if (!card) {
@@ -90,7 +90,7 @@ export class Player {
     }
   }
 
-  tradeCards(cardsToBeUsed: Card[]) {
+  tradeCards(cardsToBeUsed: ICard[]) {
     if (!this.validTradeCards(cardsToBeUsed)) {
       throw new Error('invalid cards to trade');
     } else {

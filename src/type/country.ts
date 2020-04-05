@@ -53,7 +53,7 @@ export enum CountryId {
   'japon',
 }
 
-export const Countries: ICountry[] = [
+const CountryData: ICountry[] = [
   {
     id: CountryId.gran_bretana,
     name: 'Gran Bretaña',
@@ -210,9 +210,11 @@ export const Countries: ICountry[] = [
     name: 'Japon', 'continent':'asia','limits':[CountryId.kamchatka,CountryId.china]}
 ];
 
+export const Countries: Country[] = CountryData.map(d => new Country(d.id, d.name, d.limits, d.continent));
+
 type Continent = string;
 
-export interface ICountry {
+interface ICountry {
   id: CountryId;
   name: string;
   limits: CountryId[];
@@ -222,13 +224,11 @@ export interface ICountry {
 }
 
 export class Country implements ICountry {
-  id: CountryId;
-  name: string;
-  limits: CountryId[];
-  continent: Continent;
   armies: number = 0;
   owner: Player;
 
+  constructor(public id: CountryId, public name: string, public limits: CountryId[], public continent: Continent) {}
+ 
   addArmies(armies: number) {
     this.armies += armies;
   }

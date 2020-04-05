@@ -12,12 +12,12 @@ export const allCardTypes = [
   CardTypes.cañon,
 ];
 
-export interface Card {
+export interface ICard {
   id: CountryId;
   type: CardTypes;
 }
 
-export const Cards: Card[] = [
+export const Cards: ICard[] = [
   {'id': CountryId.gran_bretana,'type': CardTypes.globo},
   {'id': CountryId.argentina,'type': CardTypes.globo},
   {'id': CountryId.chile,'type': CardTypes.barco},
@@ -70,5 +70,5 @@ export const Cards: Card[] = [
   {'id': CountryId.japon,'type': CardTypes.globo},
 ];
 
-export const isCard = (card: any) : card is Card => Cards.includes(card);
+export const isCard = (card: any) : card is ICard => Cards.includes(card);
 

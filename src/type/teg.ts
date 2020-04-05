@@ -1,12 +1,13 @@
 import {Color} from 'src/type/color';
 import {gameState} from 'src/type/states';
 import {Player} from 'src/type/player';
-import {Cards} from 'src/type/card';
+import {Cards, ICard} from 'src/type/card';
 import * as _ from 'lodash';
 import {timer} from 'rxjs';
 import {take} from 'rxjs/operators';
-import {CountryId} from 'src/type/country';
-import {Objectives} from 'src/type/objective';
+import {Country, Countries} from 'src/type/country';
+import {Objectives, ObjectiveTypes} from 'src/type/objective';
+import Dice from 'src/type/dice';
 
 const saveInterval = 5000;
 
@@ -26,6 +27,9 @@ export class Teg {
   pendingArmies = 0;
   cards = Cards;
   tradedCards = [];
+
+  currentCountryFrom: Country;
+  currentCountryTo: Country;
 
   constructor() {
 
@@ -76,12 +80,12 @@ export class Teg {
   }
 
   setCountries() {
-    const allCountries = Object.keys(CountryId);
-    var cs = _.shuffle(allCountries);
+    var cs = _.shuffle(Countries);
     var i = 0;
     _.each(cs, function(c) {
       i = i % this.players.length;
       this.players[i++].addCountry(c);
+      c.armies = 1;
     });
   }
 
@@ -100,16 +104,17 @@ export class Teg {
     }
   }
 
-  tradeCard(card: Card) {
-    var country = this.currentPlayer.getCountry(card.countryId);
-    if (country && this.currentPlayer.hasCard(card) && !this.isTradedCard(card)) {
+  tradeCard(card: ICard) {
+    let country = Country.find(card.id);
+    const playerHasCountry = country && this.currentPlayer.hasCountry(country);
+    if (playerHasCountry && this.currentPlayer.hasCard(card) && !this.isTradedCard(card)) {
       this.addArmies(country, 2);
       this.tradedCards.push(card);
     }
   }
 
   canAddArmies() {
-    return [this.states.firstArmies, this.states.secondArmies, this.states.addArmies].indexOf(this.state) !== -1 && this.currentCountryFrom && this.currentPlayer.hasCountry(this.currentCountryFrom);
+    return [gameState.firstArmies, gameState.secondArmies, gameState.addArmies].indexOf(this.state) !== -1 && this.currentCountryFrom && this.currentPlayer.hasCountry(this.currentCountryFrom);
   }
 
   canRegroup() {
@@ -119,39 +124,39 @@ export class Teg {
     }
     var countryTo = this.extendCountry(this.currentCountryTo);
     var countryFrom = this.extendCountry(this.currentCountryFrom);
-    return p && p.hasCountry(countryFrom) && p.hasCountry(countryFrom) && countryTo.limitsWith(countryFrom) && (this.state === states.regroup || this.state === states.attack);
+    return p && p.hasCountry(countryFrom) && p.hasCountry(countryFrom) && countryTo.limitsWith(countryFrom) && (this.state === gameState.regroup || this.state === gameState.attack);
   }
 
-  attempAction(q) {
+  attempAction(q: number) {
     this._countryAction(this.currentCountryFrom, this.currentCountryTo, q);
   }
 
   regroup() {
-    if (this.state === states.attack) {
-      this.state = states.regroup;
+    if (this.state === gameState.attack) {
+      this.state = gameState.regroup;
     }
   }
 
   nextState() {
     switch (this.state) {
-      case states.firstArmies:
-        this.state = states.secondArmies;
+      case gameState.firstArmies:
+        this.state = gameState.secondArmies;
       break;
-      case states.secondArmies:
-        this.state = states.attack;
+      case gameState.secondArmies:
+        this.state = gameState.attack;
       break;
-      case states.attack:
-      case states.afterCard:
-      case states.regroup:
-        this.state = states.addArmies;
+      case gameState.attack:
+      case gameState.afterCard:
+      case gameState.regroup:
+        this.state = gameState.addArmies;
       break;
-      case states.addArmies:
-        this.state = states.attack;
+      case gameState.addArmies:
+        this.state = gameState.attack;
       break;
     }
   }
 
-  extendCountry(country) {
+  extendCountry(country: Country) {
     var owner = _.find(this.players, function(p) {
       return p.hasCountry(country);
     });
@@ -160,7 +165,7 @@ export class Teg {
     return country;
   }
 
-  countryAction(country) {
+  countryAction(country: Country) {
     var picked1 = !!this.currentCountryFrom && !this.currentCountryTo;
     var picked2 = !!(this.currentCountryFrom && this.currentCountryTo);
     // var picked0 = !picked1 && !picked2;
@@ -179,41 +184,44 @@ export class Teg {
     }
   }
 
-  _countryAction(countryFrom, countryTo, q) {
-    var p = this.currentPlayer;
+  _countryAction(countryFrom: Country, countryTo: Country = null, q: number = null) {
+    let player = this.currentPlayer;
     switch (this.state) {
-      case states.firstArmies:
-      case states.secondArmies:
-      case states.addArmies:
-      if (p.hasCountry(countryFrom) && this.pendingArmies > 0) {
+      case gameState.firstArmies:
+      case gameState.secondArmies:
+      case gameState.addArmies:
+      if (player.hasCountry(countryFrom) && this.pendingArmies > 0) {
         while (q-- && this.pendingArmies--) {
           this.addArmies(countryFrom, 1);
         }
       }
       break;
-      case states.attack:
-      if (countryTo && countryTo.limitsWith(countryFrom) && !p.hasCountry(countryTo)) {
+      case gameState.attack:
+      if (countryTo && countryTo.limitsWith(countryFrom) && !player.hasCountry(countryTo)) {
         this.attack(countryFrom, countryTo, q);
       }
       break; // if you cant attack maybe you are trying to regroup
-      case states.regroup:
+      case gameState.regroup:
       if (this.canRegroup()) {
         while (q-- && countryFrom.armies > 1) {
           this.addArmies(countryTo, 1);
           this.removeArmy(countryFrom);
         }
-        this.state = states.regroup;
+        this.state = gameState.regroup;
       }
       break;
-      case states.afterCard:
-      if (p.hasCountry(countryFrom)) {
-        if (p.canUseCard(countryFrom)) {
+      case gameState.afterCard:
+      if (player.hasCountry(countryFrom)) {
+        if (player.canUseCard(countryFrom)) {
           this.addArmies(countryFrom, 1);
-          this.useCard(countryFrom);
+          player.useCard(countryFrom);
         }
       }
       break;
     }
+  }
+
+  useCard() {
   }
 
   canAttack() {
@@ -224,10 +232,10 @@ export class Teg {
     var attackingCountry = this.currentCountryFrom;
     return attackingCountry.owner === this.currentPlayer &&
       defendingCountry.owner !== this.currentPlayer &&
-      attackingCountry.armies > 1 && this.state === states.attack;
+      attackingCountry.armies > 1 && this.state === gameState.attack;
   }
 
-  attack(attackingCountry, defendingCountry, q) {
+  attack(attackingCountry: Country, defendingCountry: Country, q: number) {
     if (this.canAttack()) {
 
       this.attacker = this.currentPlayer;
@@ -235,7 +243,7 @@ export class Teg {
         return p.hasCountry(defendingCountry);
       });
 
-      q = Math.min(3,q);
+      q = Math.min(3, q);
 
       var attackDices = Math.min(attackingCountry.armies-1, q);
       var defenseDices = Math.min(defendingCountry.armies, 3);
@@ -255,9 +263,10 @@ export class Teg {
       }
 
       if (defendingCountry.armies === 0) {
-        canTakeCard = true;
+        this.canTakeCard = true;
         defender.removeCountry(defendingCountry);
         this.currentPlayer.addCountry(defendingCountry);
+        defendingCountry.setArmies(1);
         this.removeArmy(attackingCountry);
 
         // Si murió, entrego las cartas
@@ -273,11 +282,11 @@ export class Teg {
   }
 
   changeTurn() {
-    canTakeCard = false;
+    this.canTakeCard = false;
     this.checkIfWon();
 
     if (this.pendingPlayers.length === 0) {
-      if (this.state !== states.attack) {
+      if (this.state !== gameState.attack) {
         this.pendingPlayers = this.players.slice(0);
       } else {
         this.pendingPlayers = this.players.slice(1);
@@ -290,13 +299,13 @@ export class Teg {
     this.currentPlayer = this.pendingPlayers.shift();
 
     switch (this.state) {
-      case states.firstArmies:
+      case gameState.firstArmies:
       this.pendingArmies = 5;
       break;
-      case states.secondArmies:
+      case gameState.secondArmies:
       this.pendingArmies = 3;
       break;
-      case states.addArmies:
+      case gameState.addArmies:
       this.pendingArmies = Math.round(this.currentPlayer.getCountries().length/2);
       break;
       default:
@@ -307,16 +316,16 @@ export class Teg {
     this.startTimer();
   }
 
-  removeArmy(country) {
+  removeArmy(country: Country) {
     this.currentPlayer.removeArmy();
     country.removeArmies(1);
   }
 
-  addArmies(country, armies) {
+  addArmies(country: Country, armies: number) {
     country.addArmies(armies);
   }
 
-  checkIfWon(defender) {
+  checkIfWon(defender: Player = null) {
     var objective = this.currentPlayer.getObjective();
     // Objetivo común
     if (this.currentPlayer.getCountries().length >= 30) {
@@ -324,13 +333,15 @@ export class Teg {
     }
 
     // Objetivo de destrucción
-    if (defender && objective.type === OBJECTIVES_TYPES.DESTROY && !defender.getCountries().length) {
+    if (defender && objective.type === ObjectiveTypes.DESTROY && !defender.getCountries().length) {
       if (objective.value === defender.color) {
         this.gameEnded(); // ganó
       }
       // objetivo de conquista
-    } else if (objective.type === OBJECTIVES_TYPES.CONQUER) {
-      var obj = angular.copy(objective.value);
+    } else if (objective.type === ObjectiveTypes.CONQUER) {
+      let obj = {
+        ...objective.value
+      };
       _.each(this.currentPlayer.getCountries(), function(c) {
         if (obj[c.continent]) {
           obj[c.continent]--;
@@ -347,11 +358,11 @@ export class Teg {
     alert('game ended');
   }
 
-  isTradedCard(card: Card) {
-    return _.contains(this.tradedCards, card);
+  isTradedCard(card: ICard) {
+    return this.tradedCards.includes(card);
   }
 
-  trade3Cards(cards: Cards[]) {
+  trade3Cards(cards: ICard[]) {
     this.currentPlayer.tradeCards(cards);
     switch (this.currentPlayer.cardTrades) {
       case 1:

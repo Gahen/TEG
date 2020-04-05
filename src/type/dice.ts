@@ -1,4 +1,4 @@
-export class Dice {
+export default {
   roll(first: number, second: number) {
     if (first < 1 || first > 3 || second < 1 || second > 3) {
       throw new Error('Dice.roll: invalid parameters');
@@ -16,3 +16,4 @@ export class Dice {
     return pair;
   }
 }
+
