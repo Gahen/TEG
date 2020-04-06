@@ -210,8 +210,6 @@ const CountryData: ICountry[] = [
     name: 'Japon', 'continent':'asia','limits':[CountryId.kamchatka,CountryId.china]}
 ];
 
-export const Countries: Country[] = CountryData.map(d => new Country(d.id, d.name, d.limits, d.continent));
-
 type Continent = string;
 
 interface ICountry {
@@ -261,4 +259,6 @@ export class Country implements ICountry {
 export const isCountry = (country: any): country is Country => {
   return !!CountryId[country.id];
 }
+
+export const Countries: Country[] = CountryData.map(d => new Country(d.id, d.name, d.limits, d.continent));
 
