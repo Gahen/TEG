@@ -15,6 +15,7 @@ export const allCardTypes = [
 export interface ICard {
   id: CountryId;
   type: CardTypes;
+  active?: boolean; // represents the user selecting card for a trade
 }
 
 export const Cards: ICard[] = [

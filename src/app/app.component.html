@@ -1,79 +1,84 @@
-<button class="btn time col-md-2" data-ng-show="TEG.gameStarted" data-ng-disabled="TEG.state !== TEG.states.attack && TEG.state !== TEG.states.regroup" ng-click="TEG.takeCard()">Sacar tarjeta</button>
-<button class="btn time col-md-2" data-ng-show="TEG.gameStarted" data-ng-disabled="TEG.state !== TEG.states.addArmies || !canTrade3Cards()" ng-click="trade()">Canjear tarjetas</button>
-<button class="btn time col-md-2" data-ng-show="TEG.gameStarted" data-ng-disabled="TEG.state !== TEG.states.attack" ng-click="TEG.regroup()">Reagrupar</button>
-<button class="btn time col-md-2" data-ng-show="TEG.gameStarted" ng-click="TEG.changeTurn()">Terminar turno</button>
-<h3 class="time col-md-offset-10" data-ng-show="TEG.gameStarted">Tiempo {{ TEG.time/1000 }}</h3>
+<button class="btn time col-md-2" *ngIf="TEG.gameStarted" [disabled]="TEG.state !== states.attack && TEG.state !== states.regroup" (click)="TEG.takeCard()">Sacar tarjeta</button>
+<button class="btn time col-md-2" *ngIf="TEG.gameStarted" [disabled]="TEG.state !== states.addArmies || !canTrade3Cards()" (click)="trade()">Canjear tarjetas</button>
+<button class="btn time col-md-2" *ngIf="TEG.gameStarted" [disabled]="TEG.state !== states.attack" (click)="TEG.regroup()">Reagrupar</button>
+<button class="btn time col-md-2" *ngIf="TEG.gameStarted" (click)="TEG.changeTurn()">Terminar turno</button>
+<h3 class="time col-md-offset-10" *ngIf="TEG.gameStarted">Tiempo {{ TEG.time/1000 }}</h3>
 <div class="players row">
   <div class="buttons col-md-8">Jugadores:
-    <span data-ng-show="TEG.players.length === 0">Aún no hay jugadores</span>
-    <span data-ng-repeat="player in TEG.players" data-ng-class="{'bg-info': (TEG.currentPlayer && player.name === TEG.currentPlayer.name)}" class="{{player.color}}">{{player.name}} </span>
+    <span *ngIf="TEG.players.length === 0">Aún no hay jugadores</span>
+    <span *ngFor="let player of TEG.players" [class]="{'bg-info': (TEG.currentPlayer && player.name === TEG.currentPlayer.name)}"><span class="{{player.color}}">{{player.name}} </span></span>
   </div>
-  <div class="buttons col-md-4" data-ng-hide="TEG.gameStarted">
-    <button class="btn btn-primary" data-ng-click="addPlayer()">Agregar jugador</button>
-    <button class="btn btn-primary" data-ng-disabled="TEG.players.length < 2" data-ng-click="TEG.start()">¡Jugar!</button>
+  <div class="buttons col-md-4" *ngIf="!TEG.gameStarted">
+    <select [(ngModel)]="newPlayerColor">
+      <option *ngFor="let color of TEG.colors" [value]="color">
+        {{ color }}
+      </option>
+    </select>
+    <input [(ngModel)]="newPlayerName" />
+    <button class="btn btn-primary" (click)="addPlayer()">Agregar jugador</button>
+    <button class="btn btn-primary" [disabled]="TEG.players.length < 2" (click)="TEG.start()">¡Jugar!</button>
   </div>
 </div>
 <div id="juego">
-  <div data-ng-show="TEG.players.length !== 0 && TEG.gameStarted" class="interface">
+  <div *ngIf="TEG.players.length !== 0 && TEG.gameStarted" class="interface">
     <div class="middle">
-      <accordion close-others="oneAtATime" ng-show="TEG.canAttack()">
+      <accordion close-others="oneAtATime" *ngIf="TEG.canAttack()">
         <accordion-group is-open="true" class="width">
           <accordion-heading>Atacar</accordion-heading>
-          <form ng-submit="TEG.attempAction(attack);">
+          <form (submit)="TEG.attempAction(armies);">
             <input type="submit" class="btn centered" value="Atacar">
-            <input type="numeric" class="form-control input-sm" ng-model="attack" maxlength="{{TEG.currentCountryFrom.armies-1}}" ng-required />
+            <input type="numeric" class="form-control input-sm" name="armies" [(ngModel)]="armies" maxlength="{{TEG.currentCountryFrom.armies-1}}" required />
           </form>
           <h4>De {{TEG.currentCountryFrom.getName()}} a {{TEG.currentCountryTo.getName()}}</h4>
         </accordion-group>
       </accordion>
-      <accordion close-others="oneAtATime" ng-show="TEG.canAddArmies()">
+      <accordion close-others="oneAtATime" *ngIf="TEG.canAddArmies()">
         <accordion-group is-open="true" class="width">
           <accordion-heading>Sumar tropas</accordion-heading>
-          <form ng-submit="TEG.attempAction(armies);">
-            <input type="submit" class="btn centered" value="Atacar">
-            <input type="numeric" class="form-control input-sm" ng-model="armies" maxlength="{{TEG.pendingArmies" ng-required />
+          <form (submit)="TEG.attempAction(armies)">
+            <input type="submit" class="btn centered" value="Sumar">
+            <input type="numeric" class="form-control input-sm" name="armies" [(ngModel)]="armies" maxlength="{{TEG.pendingArmies}}" required />
           </form>
           <h4>En {{TEG.currentCountryFrom.getName()}}</h4>
         </accordion-group>
       </accordion>
-      <accordion close-others="oneAtATime" ng-show="TEG.canRegroup()">
+      <accordion close-others="oneAtATime" *ngIf="TEG.canRegroup()">
         <accordion-group is-open="true" class="width">
           <accordion-heading>Reagrupar</accordion-heading>
-          <form ng-submit="TEG.attempAction(regroup);">
+          <form (submit)="TEG.attempAction(armies);">
             <input type="submit" class="btn centered" value="Pasar">
-            <input type="numeric" class="form-control input-sm" ng-model="regroup" maxlength="{{TEG.currentCountryFrom.armies-1}}" ng-required />
+            <input type="numeric" class="form-control input-sm" name="armies" [(ngModel)]="armies" maxlength="{{TEG.currentCountryFrom.armies-1}}" required />
           </form>
           <h4>De {{TEG.currentCountryFrom.getName()}} a {{TEG.currentCountryTo.getName()}}</h4>
         </accordion-group>
       </accordion>
     </div>
     <div class="left">
-      <accordion close-others="oneAtATime" data-ng-class="{'text-muted': TEG.currentPlayer !== TEG.defender || TEG.currentPlayer !== TEG.attacker}">
+      <accordion close-others="oneAtATime" *ngIf="TEG.attacker?.name || TEG.defender?.name" [class]="{'text-muted': TEG.currentPlayer !== TEG.defender || TEG.currentPlayer !== TEG.attacker}">
         <accordion-group is-open="true" class="width">
           <accordion-heading>
-            Dados<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
+            Dados<i class="pull-right glyphicon" [class]="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
           </accordion-heading>
-          <h5>Atacando: ({{ TEG.attacker.name }})</h5>
-          <ul data-ng-repeat="dice in TEG.dices[0] track by $index">
-            <li>{{ dice }}</li>
+          <h5>Atacando: ({{ TEG.attacker?.name }})</h5>
+          <ul>
+            <li *ngFor="let dice of TEG.dices[0]">{{ dice }}</li>
           </ul>
-
-          <h5>Defendiendo: ({{ TEG.defender.name }})</h5>
-          <ul data-ng-repeat="dice in TEG.dices[1] track by $index">
-            <li>{{ dice }}</li>
+          <h5>Defendiendo: ({{ TEG.defender?.name }})</h5>
+          <ul>
+            <li *ngFor="let dice of TEG.dices[1]">{{ dice }}</li>
           </ul>
         </accordion-group>
       </accordion>
       <accordion close-others="oneAtATime">
         <accordion-group is-open="true">
           <accordion-heading>
-            Tarjetas<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
+            Tarjetas<i class="pull-right glyphicon" [class]="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
           </accordion-heading>
           <ul>
-            <li class="btn btn-default" data-ng-repeat="card in TEG.currentPlayer.getCards()" data-ng-class="{'active':card.active}" data-ng-click="card.active=!card.active">
-            <p>{{card.country.getName()}}</p>
-            <p>{{card.getType()}}</p>
-            <button data-ng-disabled="TEG.isTradedCard(card)" data-ng-click="TEG.tradeCard(card)">Canjear</button>
+            <li *ngFor="let card of TEG.currentPlayer.getCards()" [class]="{'btn btn-default': true, 'active':card.active}" (click)="toggleActive(card)">
+            <p>{{card.id}}</p>
+            <p>{{card.type}}</p>
+            <button [disabled]="TEG.isTradedCard(card)" (click)="TEG.tradeCard(card)">Canjear</button>
             </li>
           </ul>
         </accordion-group>
@@ -81,7 +86,7 @@
       <accordion close-others="oneAtATime">
         <accordion-group is-open="true" class="width">
           <accordion-heading>
-            Estado<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
+            Estado<i [class]="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
           </accordion-heading>
           <p>Países:<strong>{{ TEG.currentPlayer.getCountries().length }}</strong></p>
           <p>Tropas:<strong>{{ TEG.currentPlayer.getArmies() }}</strong></p>
@@ -93,10 +98,10 @@
       </accordion>
     </div>
     <div class="right">
-      <accordion close-others="oneAtATime">
+      <accordion close-others="oneAtATime" *ngIf="TEG.currentCountryFrom">
         <accordion-group is-open="true" class="width">
           <accordion-heading>
-            País origen<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
+            País origen<i [class]="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
           </accordion-heading>
           <p>País:<strong>{{ TEG.currentCountryFrom.getName() }}</strong></p>
           <p>Continente:<strong>{{ TEG.currentCountryFrom.continent }}</strong></p>
@@ -104,10 +109,10 @@
           <p>Tropas:<strong>{{ TEG.currentCountryFrom.armies }}</strong></p>
         </accordion-group>
       </accordion>
-      <accordion close-others="oneAtATime">
+      <accordion close-others="oneAtATime" *ngIf="TEG.currentCountryTo">
         <accordion-group is-open="true" class="width">
           <accordion-heading>
-            País objetivo<i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
+            País objetivo<i class="pull-right glyphicon" [class]="{'glyphicon-chevron-down': true, 'glyphicon-chevron-right': !true}"></i>
           </accordion-heading>
           <p>País:<strong>{{ TEG.currentCountryTo.getName() }}</strong></p>
           <p>Continente:<strong>{{ TEG.currentCountryTo.continent }}</strong></p>
@@ -117,17 +122,7 @@
       </accordion>
     </div>
   </div>
-  <div class="row">
-    <div class="col-md-12">
-      <h4>Mapa</h4>
-      <mapa teg="TEG"></mapa>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-md-10">
-    </div>
-    <div class="col-md-2">
-    </div>
-  </div>
+  <h4>Mapa</h4>
+  <mapa [teg]="TEG"></mapa>
 </div>
 

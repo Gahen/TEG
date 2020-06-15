@@ -17,7 +17,7 @@ export class Teg {
   tick: number;
   pendingPlayers: Player[] = [];
   players: Player[] = [];
-  colors: Color[] = [];
+  colors: Color[] = Object.values(Color);
   state = gameState.firstArmies;
   currentPlayer: Player;
   attacker: Player; // last attacking player
@@ -47,7 +47,7 @@ export class Teg {
   }
 
   addPlayer(color: Color, name: string) {
-    this.colors = this.colors.filter(c => c === color);
+    this.colors = this.colors.filter(c => c !== color);
     this.players.push(new Player(name, color));
   }
 
@@ -82,7 +82,7 @@ export class Teg {
   setCountries() {
     var cs = _.shuffle(Countries);
     var i = 0;
-    _.each(cs, function(c) {
+    _.each(cs, (c) => {
       i = i % this.players.length;
       this.players[i++].addCountry(c);
       c.armies = 1;
@@ -127,8 +127,8 @@ export class Teg {
     return p && p.hasCountry(countryFrom) && p.hasCountry(countryFrom) && countryTo.limitsWith(countryFrom) && (this.state === gameState.regroup || this.state === gameState.attack);
   }
 
-  attempAction(q: number) {
-    this._countryAction(this.currentCountryFrom, this.currentCountryTo, q);
+  attempAction(q: string) {
+    this._countryAction(this.currentCountryFrom, this.currentCountryTo, parseInt(q, 10));
   }
 
   regroup() {
@@ -271,7 +271,7 @@ export class Teg {
 
         // Si murió, entrego las cartas
         if (defender.getCountries().length === 0) {
-        _.each(defender.getCards(), function(c) {
+        _.each(defender.getCards(), (c) => {
           this.currentPlayer.addCard(c);
         });
         }
