@@ -27,6 +27,7 @@ export class Teg {
   pendingArmies = 0;
   cards = Cards;
   tradedCards = [];
+  countries: Country[] = [];
 
   currentCountryFrom: Country;
   currentCountryTo: Country;
@@ -57,12 +58,12 @@ export class Teg {
   }
 
   start() {
-    this.gameStarted = true;
-    this.setObjectives();
     this.setCountries();
+    this.setObjectives();
     this.currentPlayer = this.players[0];
     this.pendingPlayers = this.players.slice(1);
     this.pendingArmies = 5;
+    this.gameStarted = true;
     this.startTimer();
   }
 
@@ -84,8 +85,10 @@ export class Teg {
     var i = 0;
     _.each(cs, (c) => {
       i = i % this.players.length;
+      c.owner = this.players[i];
       this.players[i++].addCountry(c);
       c.armies = 1;
+      this.countries.push(c);
     });
   }
 
@@ -166,25 +169,32 @@ export class Teg {
   }
 
   countryAction(country: Country) {
-    var picked1 = !!this.currentCountryFrom && !this.currentCountryTo;
+    var picked1 = this.currentCountryFrom  && !this.currentCountryTo;
     var picked2 = !!(this.currentCountryFrom && this.currentCountryTo);
     // var picked0 = !picked1 && !picked2;
 
-    if (picked1 && this.currentCountryFrom.id === country.id) {
-      this._countryAction(this.currentCountryFrom);
+    
+
+    if (picked1) {
+      if (this.currentCountryFrom.id === country.id) {
+        this._countryAction(this.currentCountryFrom);
+      } else if ([gameState.firstArmies, gameState.secondArmies, gameState.addArmies].includes(this.state)) {
+        this.currentCountryFrom = this.extendCountry(country);
+      } else if (country.limitsWith(this.currentCountryFrom)) {
+        this.currentCountryTo = this.extendCountry(country);
+      }
     }
-    else if (picked1 && country.limitsWith(this.currentCountryFrom)) {
-      this.currentCountryTo = this.extendCountry(country);
-    }
-    else if (picked2 && this.currentCountryTo.id === country.id) {
-      this._countryAction(this.currentCountryFrom, this.currentCountryTo);
+    else if (picked2) {
+      if (this.currentCountryTo.id === country.id) {
+        this._countryAction(this.currentCountryFrom, this.currentCountryTo);
+      }
     } else { // || picked0
       this.currentCountryFrom = this.extendCountry(country);
       delete this.currentCountryTo;
     }
   }
 
-  _countryAction(countryFrom: Country, countryTo: Country = null, q: number = null) {
+  _countryAction(countryFrom: Country, countryTo: Country = null, q: number = 1) {
     let player = this.currentPlayer;
     switch (this.state) {
       case gameState.firstArmies:

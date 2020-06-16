@@ -29,7 +29,7 @@ export class Player {
   }
 
   hasCountry(country: Country) {
-    return this.countries.includes(country);
+    return this.countries.some(playerC => playerC.id === country.id);
   }
 
   addCountry(country: Country) {

@@ -3,6 +3,6 @@ export enum Color {
   red = 'red',
   green = 'green',
   yellow = 'yellow',
-  pink = 'pìnk',
+  pink = 'pink',
   black = 'black',
 };

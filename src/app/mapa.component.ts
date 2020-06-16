@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, ElementRef, Renderer2 } from '@angular/core';
+import { Component, Input, OnInit, ElementRef, Renderer2, OnChanges, SimpleChanges } from '@angular/core';
 import {Teg} from 'src/type/teg';
-import {CountryId, Countries} from 'src/type/country';
+import {CountryId, Countries, Country} from 'src/type/country';
 
 function resize(element: HTMLElement) {
   const scale = element.offsetWidth / element.querySelector('g').getBoundingClientRect().width;
@@ -11,75 +11,91 @@ function resize(element: HTMLElement) {
 @Component({
   selector: 'mapa',
   templateUrl: './mapa.svg',
+  styleUrls: ['./mapa.component.scss']
 })
-export class MapaComponent implements OnInit {
+export class MapaComponent implements OnInit, OnChanges {
   @Input() teg: Teg;
+  @Input() started: boolean;
 
   constructor(private el: ElementRef, private renderer: Renderer2) {}
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.started.currentValue) {
+      this.getElementsAsArray().forEach((el: SVGElement) => this.setOwnerColor(el));
+    }
+  }
+
+  getElementsAsArray() {
+    return [ ...this.el.nativeElement.querySelectorAll('[inkscape\\:label="paises"] g') ];
+  }
+
   ngOnInit() {
-    let last: HTMLElement;
-    let elements = [ ...this.el.nativeElement.querySelectorAll('g g g') ];
-    elements = elements.filter((el: HTMLElement) => Countries.some(c => c.name.toLowerCase() === el.id));
+    let last: SVGElement;
+    let elements = this.getElementsAsArray();
+    elements = elements.filter((el: SVGElement) => Countries.some(c => c.id === CountryId[el.getAttribute("id")]));
 
     const click = (event: any) => {
       event.preventDefault();
-      const country = Countries.find(c => c.name.toLowerCase() === event.currentTarget.id);
+      if (!this.started) {
+        return false;
+      }
+      const country = this.find(event.currentTarget.id);
+      const lastCountry = this.find(last?.id);
+
       if (country) {
         this.teg.countryAction(country);
+        if (lastCountry !== this.teg.currentCountryFrom && lastCountry !== this.teg.currentCountryTo) {
+          this.setOwnerColor(last);
+        }
+        last = event.currentTarget;
+        last.setAttribute('class', 'active');
+        this.setArmies(last)
       }
 
-      if (last) {
-        this.setOwnerColor(last);
-      }
-      last = event.currentTarget;
-
-      last.setAttribute('class', 'active');
     };
 
-    elements.forEach((el: HTMLElement) => {
+    elements.forEach((el: SVGElement) => {
       this.renderer.listen(el, 'dblclick', (event) => event.preventDefault());
       this.renderer.listen(el, 'click', click);
     });
 
-    elements.forEach((el: HTMLElement) => this.setOwnerColor(el));
+    resize(this.el.nativeElement);
   }
 
-  find(countryId: CountryId) {
-    return Countries.find(el => el.id === countryId);
+  find(countryId: string) {
+    return this.teg.countries.find(el => el.id === CountryId[countryId]);
   }
 
-  setOwnerColor = (c: HTMLElement) => {
-    const country = this.find(CountryId[c.getAttribute('id')]);
-    const el = this.el.nativeElement;
+  setArmies(el: SVGElement) {
+    const country = this.find(el.getAttribute('id'));
+    el.querySelectorAll('tspan')[1].textContent = `${country.armies}`;
+  }
+
+  setOwnerColor = (el: SVGElement) => {
+    const country = this.find(el.getAttribute('id'));
     if (country) {
       // Texto y cantidad
-      el.querySelector('tspan').innerText = country.getName();
-      if (el.querySelector('tspan').length < 2) {
+      el.querySelector('tspan').textContent = country.getName();
+      if (el.querySelectorAll('tspan').length < 2) {
         const p = el.querySelector('tspan');
-        const clone = p.clone();
-        clone.setAttribute('y', parseFloat(clone.attr('y'))+6);
-        clone.setAttribute('x', parseFloat(clone.attr('x'))+p[0].offsetWidth/2 - 3);
-        clone.innerText = '';
+        const offsetW = p.getBBox().width / 2;
+        const offsetH = p.getBBox().height - 1;
+        const clone = p.cloneNode() as SVGTSpanElement;
+        clone.setAttribute("class","armies");
+        clone.setAttribute('y', (parseFloat(clone.getAttribute('y')) + offsetH).toString());
+        clone.setAttribute('x', (parseFloat(clone.getAttribute('x'))+offsetW).toString());
         el.querySelector('tspan').after(clone);
+        this.renderer.listen(p, 'dblclick', (event) => event.preventDefault());
+        this.renderer.listen(clone, 'dblclick', (event) => event.preventDefault());
       }
 
-      if  (country.armies) {
-        el.querySelectorAll('tspan')[1].innerText = '('+country.armies+')';
+      el.setAttribute('class', country.owner?.color || '');
+
+      if (country.armies) {
+        this.setArmies(el)
       }
 
-      // nombres
-      el.querySelector('tspan').innerText = country.getName();
+      el.querySelectorAll('tspan')[0].textContent = country.getName();
     }
-
-    resize(el);
   };
-
-  /*
-  @HostListener('window:resize')
-  onResize() {
-    resize(this.el.nativeElement)
-  }
-  */
-
 };
