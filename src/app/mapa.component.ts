@@ -47,8 +47,12 @@ export class MapaComponent implements OnInit, OnChanges {
         if (lastCountry !== this.teg.currentCountryFrom && lastCountry !== this.teg.currentCountryTo) {
           this.setOwnerColor(last);
         }
+        if (last) {
+          this.checkCountryStatus(country, last);
+        }
         last = event.currentTarget;
-        last.setAttribute('class', 'active');
+        this.checkCountryStatus(lastCountry, last);
+
         this.setArmies(last)
       }
 
@@ -60,6 +64,14 @@ export class MapaComponent implements OnInit, OnChanges {
     });
 
     resize(this.el.nativeElement);
+  }
+
+  checkCountryStatus(country: Country, element: SVGElement) {
+    if (country === this.teg.currentCountryFrom || country === this.teg.currentCountryTo) {
+      element.setAttribute('class', 'active');
+    } else {
+      element.setAttribute('class', country.owner?.color || '');
+    }
   }
 
   find(countryId: string) {

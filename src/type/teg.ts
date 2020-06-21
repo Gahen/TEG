@@ -9,7 +9,7 @@ import {Country, Countries} from 'src/type/country';
 import {Objectives, ObjectiveTypes} from 'src/type/objective';
 import Dice from 'src/type/dice';
 
-const saveInterval = 5000;
+const PERSIST_GAME_INTERVAL = 5000;
 
 export class Teg {
   canTakeCard = false;
@@ -34,14 +34,11 @@ export class Teg {
 
   constructor() {
 
-    /*
     if (localStorage.getItem('TEGdata')) {
-      this.parse(localStorage.getItem('TEGdata'));
+      // this.parse(localStorage.getItem('TEGdata'));
     }
-    */
 
-    timer(saveInterval)
-      .pipe(take(1))
+    timer(0, PERSIST_GAME_INTERVAL)
       .subscribe(() => {
         // localStorage.setItem('TEGdata', this.serialize());
       });
@@ -69,8 +66,7 @@ export class Teg {
 
   startTimer() {
     this.tick = (new Date()).getTime()+60*2*1000; // 2 minutes
-    var sub = timer(100)
-      .pipe(take(1))
+    var sub = timer(0, 100)
       .subscribe(() =>  {
         this.time = this.tick - (new Date()).getTime();
         if (this.time <= 0) {

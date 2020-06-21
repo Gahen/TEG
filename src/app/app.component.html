@@ -21,38 +21,26 @@
 </div>
 <div id="juego">
   <div *ngIf="TEG.players.length !== 0 && TEG.gameStarted" class="interface">
-    <div class="middle">
-      <accordion close-others="oneAtATime" *ngIf="TEG.canAttack()">
-        <accordion-group is-open="true" class="width">
-          <accordion-heading>Atacar</accordion-heading>
-          <form (submit)="TEG.attempAction(armies);">
-            <input type="submit" class="btn centered" value="Atacar">
-            <input type="numeric" class="form-control input-sm" name="armies" [(ngModel)]="armies" maxlength="{{TEG.currentCountryFrom.armies-1}}" required />
-          </form>
-          <h4>De {{TEG.currentCountryFrom.getName()}} a {{TEG.currentCountryTo.getName()}}</h4>
-        </accordion-group>
-      </accordion>
-      <accordion close-others="oneAtATime" *ngIf="TEG.canAddArmies()">
-        <accordion-group is-open="true" class="width">
-          <accordion-heading>Sumar tropas</accordion-heading>
-          <form (submit)="TEG.attempAction(armies)">
-            <input type="submit" class="btn centered" value="Sumar">
-            <input type="numeric" class="form-control input-sm" name="armies" [(ngModel)]="armies" maxlength="{{TEG.pendingArmies}}" required />
-          </form>
-          <h4>En {{TEG.currentCountryFrom.getName()}}</h4>
-        </accordion-group>
-      </accordion>
-      <accordion close-others="oneAtATime" *ngIf="TEG.canRegroup()">
-        <accordion-group is-open="true" class="width">
-          <accordion-heading>Reagrupar</accordion-heading>
-          <form (submit)="TEG.attempAction(armies);">
-            <input type="submit" class="btn centered" value="Pasar">
-            <input type="numeric" class="form-control input-sm" name="armies" [(ngModel)]="armies" maxlength="{{TEG.currentCountryFrom.armies-1}}" required />
-          </form>
-          <h4>De {{TEG.currentCountryFrom.getName()}} a {{TEG.currentCountryTo.getName()}}</h4>
-        </accordion-group>
-      </accordion>
+    <div *ngIf="TEG.canAttack()">
+      <accordion-group is-open="true" class="width">
+        <h4>Atacar</h4>
+        <form (submit)="TEG.attempAction(armies);">
+          <input type="submit" class="btn centered" value="Atacar">
+          <input type="numeric" class="form-control input-sm" name="armies" [(ngModel)]="armies" maxlength="{{TEG.currentCountryFrom.armies-1}}" required />
+        </form>
+        <h4>De {{TEG.currentCountryFrom.getName()}} a {{TEG.currentCountryTo.getName()}}</h4>
+      </accordion-group>
     </div>
+    <accordion close-others="oneAtATime" *ngIf="TEG.canRegroup()">
+      <accordion-group is-open="true" class="width">
+        <accordion-heading>Reagrupar</accordion-heading>
+        <form (submit)="TEG.attempAction(armies);">
+          <input type="submit" class="btn centered" value="Pasar">
+          <input type="numeric" class="form-control input-sm" name="armies" [(ngModel)]="armies" maxlength="{{TEG.currentCountryFrom.armies-1}}" required />
+        </form>
+        <h4>De {{TEG.currentCountryFrom.getName()}} a {{TEG.currentCountryTo.getName()}}</h4>
+      </accordion-group>
+    </accordion>
     <div class="left">
       <accordion close-others="oneAtATime" *ngIf="TEG.attacker?.name || TEG.defender?.name" [class]="{'text-muted': TEG.currentPlayer !== TEG.defender || TEG.currentPlayer !== TEG.attacker}">
         <accordion-group is-open="true" class="width">
