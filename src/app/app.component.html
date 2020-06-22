@@ -1,14 +1,16 @@
-<button class="btn time col-md-2" *ngIf="TEG.gameStarted" [disabled]="TEG.state !== states.attack && TEG.state !== states.regroup" (click)="TEG.takeCard()">Sacar tarjeta</button>
-<button class="btn time col-md-2" *ngIf="TEG.gameStarted" [disabled]="TEG.state !== states.addArmies || !canTrade3Cards()" (click)="trade()">Canjear tarjetas</button>
-<button class="btn time col-md-2" *ngIf="TEG.gameStarted" [disabled]="TEG.state !== states.attack" (click)="TEG.regroup()">Reagrupar</button>
-<button class="btn time col-md-2" *ngIf="TEG.gameStarted" (click)="TEG.changeTurn()">Terminar turno</button>
-<h3 class="time col-md-offset-10" *ngIf="TEG.gameStarted">Tiempo {{ TEG.time/1000 }}</h3>
+<div *ngIf="TEG.gameStarted | async">
+  <button class="btn time col-md-2" [disabled]="TEG.state !== states.attack && TEG.state !== states.regroup" (click)="TEG.takeCard()">Sacar tarjeta</button>
+  <button class="btn time col-md-2" [disabled]="TEG.state !== states.addArmies || !canTrade3Cards()" (click)="trade()">Canjear tarjetas</button>
+  <button class="btn time col-md-2" [disabled]="TEG.state !== states.attack" (click)="TEG.regroup()">Reagrupar</button>
+  <button class="btn time col-md-2" (click)="TEG.changeTurn()">Terminar turno</button>
+  <h3 class="time col-md-offset-10">Tiempo {{ TEG.time/1000 }}</h3>
+</div>
 <div class="players row">
   <div class="buttons col-md-8">Jugadores:
     <span *ngIf="TEG.players.length === 0">Aún no hay jugadores</span>
     <span *ngFor="let player of TEG.players" [class]="{'bg-info': (TEG.currentPlayer && player.name === TEG.currentPlayer.name)}"><span class="{{player.color}}">{{player.name}} </span></span>
   </div>
-  <div class="buttons col-md-4" *ngIf="!TEG.gameStarted">
+  <div class="buttons col-md-4" *ngIf="!(TEG.gameStarted | async)">
     <select [(ngModel)]="newPlayerColor">
       <option *ngFor="let color of TEG.colors" [value]="color">
         {{ color }}
@@ -20,7 +22,7 @@
   </div>
 </div>
 <div id="juego">
-  <div *ngIf="TEG.players.length !== 0 && TEG.gameStarted" class="interface">
+  <div *ngIf="TEG.players.length !== 0 && (TEG.gameStarted | async)" class="interface">
     <div *ngIf="TEG.canAttack()">
       <accordion-group is-open="true" class="width">
         <h4>Atacar</h4>
@@ -111,6 +113,6 @@
     </div>
   </div>
   <h4>Mapa</h4>
-  <mapa [teg]="TEG" [started]="TEG.gameStarted"></mapa>
+  <mapa [teg]="TEG"></mapa>
 </div>
 

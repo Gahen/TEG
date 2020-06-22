@@ -3,8 +3,7 @@ import {gameState} from 'src/type/states';
 import {Player} from 'src/type/player';
 import {Cards, ICard} from 'src/type/card';
 import * as _ from 'lodash';
-import {timer} from 'rxjs';
-import {take} from 'rxjs/operators';
+import { timer, Subject, Observable } from 'rxjs';
 import {Country, Countries} from 'src/type/country';
 import {Objectives, ObjectiveTypes} from 'src/type/objective';
 import Dice from 'src/type/dice';
@@ -22,7 +21,8 @@ export class Teg {
   currentPlayer: Player;
   attacker: Player; // last attacking player
   defender: Player; // last defending player
-  gameStarted = false;
+  gameStartedSubject: Subject<boolean> = new Subject();
+  gameStarted: Observable<boolean>;
   dices = []; // last pair of dices
   pendingArmies = 0;
   cards = Cards;
@@ -32,7 +32,12 @@ export class Teg {
   currentCountryFrom: Country;
   currentCountryTo: Country;
 
+  countryChanged: Observable<Country>;
+  countryChangedSubject: Subject<Country> = new Subject();
+
   constructor() {
+    this.gameStarted = this.gameStartedSubject.asObservable();
+    this.countryChanged = this.countryChangedSubject.asObservable();
 
     if (localStorage.getItem('TEGdata')) {
       // this.parse(localStorage.getItem('TEGdata'));
@@ -60,13 +65,13 @@ export class Teg {
     this.currentPlayer = this.players[0];
     this.pendingPlayers = this.players.slice(1);
     this.pendingArmies = 5;
-    this.gameStarted = true;
+    this.gameStartedSubject.next(true);
     this.startTimer();
   }
 
   startTimer() {
     this.tick = (new Date()).getTime()+60*2*1000; // 2 minutes
-    var sub = timer(0, 100)
+    let sub = timer(0, 100)
       .subscribe(() =>  {
         this.time = this.tick - (new Date()).getTime();
         if (this.time <= 0) {
@@ -77,8 +82,8 @@ export class Teg {
   }
 
   setCountries() {
-    var cs = _.shuffle(Countries);
-    var i = 0;
+    let cs = _.shuffle(Countries);
+    let i = 0;
     _.each(cs, (c) => {
       i = i % this.players.length;
       c.owner = this.players[i];
@@ -89,7 +94,7 @@ export class Teg {
   }
 
   setObjectives() {
-    var objs = _.shuffle(Objectives.slice(0));
+    let objs = _.shuffle(Objectives.slice(0));
     _.each(this.players, function(p) {
       p.setObjective(objs.shift());
     });
@@ -117,12 +122,12 @@ export class Teg {
   }
 
   canRegroup() {
-    var p = this.currentPlayer;
+    let p = this.currentPlayer;
     if (!this.currentCountryTo || !this.currentCountryFrom) {
       return false;
     }
-    var countryTo = this.extendCountry(this.currentCountryTo);
-    var countryFrom = this.extendCountry(this.currentCountryFrom);
+    let countryTo = this.extendCountry(this.currentCountryTo);
+    let countryFrom = this.extendCountry(this.currentCountryFrom);
     return p && p.hasCountry(countryFrom) && p.hasCountry(countryFrom) && countryTo.limitsWith(countryFrom) && (this.state === gameState.regroup || this.state === gameState.attack);
   }
 
@@ -156,7 +161,7 @@ export class Teg {
   }
 
   extendCountry(country: Country) {
-    var owner = _.find(this.players, function(p) {
+    let owner = _.find(this.players, function(p) {
       return p.hasCountry(country);
     });
     country.owner = owner;
@@ -164,30 +169,47 @@ export class Teg {
     return country;
   }
 
-  countryAction(country: Country) {
-    var picked1 = this.currentCountryFrom  && !this.currentCountryTo;
-    var picked2 = !!(this.currentCountryFrom && this.currentCountryTo);
-    // var picked0 = !picked1 && !picked2;
+  isPuttingArmies() {
+    return [gameState.firstArmies, gameState.secondArmies, gameState.addArmies].includes(this.state);
+  }
 
-    
+  countryAction(country: Country) {
+    let picked1 = this.currentCountryFrom  && !this.currentCountryTo;
+    let picked2 = !!(this.currentCountryFrom && this.currentCountryTo);
+    const oldCountryFrom = this.currentCountryFrom;
+    const oldCountryTo = this.currentCountryTo;
 
     if (picked1) {
-      if (this.currentCountryFrom.id === country.id) {
+      if (this.currentCountryFrom.id === country.id && this.isPuttingArmies()) {
         this._countryAction(this.currentCountryFrom);
-      } else if ([gameState.firstArmies, gameState.secondArmies, gameState.addArmies].includes(this.state)) {
+      } else if (this.isPuttingArmies()) {
         this.currentCountryFrom = this.extendCountry(country);
       } else if (country.limitsWith(this.currentCountryFrom)) {
-        this.currentCountryTo = this.extendCountry(country);
+        if (this.currentCountryFrom.owner === this.currentPlayer 
+            && (country.owner === this.currentPlayer && gameState.regroup === this.state
+            || (country.owner !== this.currentPlayer && gameState.attack === this.state))) {
+            this.currentCountryTo = this.extendCountry(country);
+        } else {
+          this.currentCountryFrom = this.extendCountry(country);
+        }
+      } else {
+        this.currentCountryFrom = this.extendCountry(country);
       }
     }
     else if (picked2) {
       if (this.currentCountryTo.id === country.id) {
         this._countryAction(this.currentCountryFrom, this.currentCountryTo);
+      } else {
+        this.clearSelectedCountries();
       }
     } else { // || picked0
       this.currentCountryFrom = this.extendCountry(country);
-      delete this.currentCountryTo;
     }
+
+    // update all potentially changed countries
+    this.countryChangedSubject.next(oldCountryTo);
+    this.countryChangedSubject.next(oldCountryFrom);
+    this.countryChangedSubject.next(country);
   }
 
   _countryAction(countryFrom: Country, countryTo: Country = null, q: number = 1) {
@@ -204,7 +226,7 @@ export class Teg {
       break;
       case gameState.attack:
       if (countryTo && countryTo.limitsWith(countryFrom) && !player.hasCountry(countryTo)) {
-        this.attack(countryFrom, countryTo, q);
+        this.attack(countryFrom, countryTo);
       }
       break; // if you cant attack maybe you are trying to regroup
       case gameState.regroup:
@@ -234,29 +256,27 @@ export class Teg {
     if (!this.currentCountryTo || !this.currentCountryFrom) {
       return false;
     }
-    var defendingCountry = this.currentCountryTo;
-    var attackingCountry = this.currentCountryFrom;
+    let defendingCountry = this.currentCountryTo;
+    let attackingCountry = this.currentCountryFrom;
     return attackingCountry.owner === this.currentPlayer &&
       defendingCountry.owner !== this.currentPlayer &&
       attackingCountry.armies > 1 && this.state === gameState.attack;
   }
 
-  attack(attackingCountry: Country, defendingCountry: Country, q: number) {
+  attack(attackingCountry: Country, defendingCountry: Country) {
     if (this.canAttack()) {
 
       this.attacker = this.currentPlayer;
-      var defender = this.defender = _.find(this.players, function(p) {
+      let defender = this.defender = _.find(this.players, function(p) {
         return p.hasCountry(defendingCountry);
       });
 
-      q = Math.min(3, q);
-
-      var attackDices = Math.min(attackingCountry.armies-1, q);
-      var defenseDices = Math.min(defendingCountry.armies, 3);
-      var dices = Dice.roll(attackDices, defenseDices);
+      let attackDices = Math.min(attackingCountry.armies-1, 3);
+      let defenseDices = Math.min(defendingCountry.armies, 3);
+      let dices = Dice.roll(attackDices, defenseDices);
       this.dices = dices;
 
-      for (var i=0; i < dices[0].length && i < dices[1].length; i++) {
+      for (let i=0; i < dices[0].length && i < dices[1].length; i++) {
         if (defendingCountry.armies === 0) {
           break;
         }
@@ -319,7 +339,18 @@ export class Teg {
       break;
     }
 
+    this.clearSelectedCountries();
+
     this.startTimer();
+  }
+
+  clearSelectedCountries() {
+    const cf = this.currentCountryFrom;
+    const ct =  this.currentCountryTo;
+    delete this.currentCountryFrom;
+    delete this.currentCountryTo;
+    this.countryChangedSubject.next(ct);
+    this.countryChangedSubject.next(cf);
   }
 
   removeArmy(country: Country) {
@@ -332,7 +363,7 @@ export class Teg {
   }
 
   checkIfWon(defender: Player = null) {
-    var objective = this.currentPlayer.getObjective();
+    let objective = this.currentPlayer.getObjective();
     // Objetivo común
     if (this.currentPlayer.getCountries().length >= 30) {
       this.gameEnded();

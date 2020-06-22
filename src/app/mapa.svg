@@ -1431,9 +1431,7 @@
        inkscape:label="paises"
        style="display:inline"
        transform="translate(-46.291539,-79.204194)">
-      <g
-         id="gran_bretana"
-         inkscape:label="#g3594">
+      <g country="gran_bretana" [teg]="teg">
         <path
            id="path4212"
            d="m 383.62035,237.48514 c 1.09388,1.34812 3.088,1.95314 4.73214,2.76786 1.69087,1.09439 3.6539,0.67141 3.06449,-1.65594 1.8117,0.90073 3.55613,1.79735 4.79265,3.53094 2.22046,1.21578 2.41146,-1.87465 2.90205,-3.28408 0.59417,-1.18817 1.44344,-4.12441 2.98685,-2.03308 1.29993,1.88681 4.46461,1.50296 4.99163,-0.7623 0.48741,-1.13037 1.3179,-1.76903 2.20838,-2.0337 0.0847,-1.66657 0.15594,-3.34244 0.276,-5.00313 0.79586,-1.79443 3.00105,-1.20092 4.16091,-1.92232 1.16459,-2.11807 -0.0127,-4.38263 -0.60688,-6.46256 -0.80518,-2.29874 -3.13312,-3.31685 -4.93735,-4.64645 -1.14799,-0.41374 -3.88908,-0.1661 -2.35843,-2.31504 1.43763,-1.72388 3.99828,-1.74188 5.53786,-3.29698 -0.81868,-1.6056 -3.57201,-0.69516 -5.14628,-1.08283 -0.10064,-2.49515 3.855,-1.43841 3.76841,-3.79416 0.33369,-2.66357 -2.9082,-2.00756 -4.15525,-3.26738 0.024,-1.51487 2.07501,-4.54585 -0.93597,-4.20583 -2.56097,0.51692 -3.20655,3.58385 -5.36929,4.75172 -2.31049,0.61398 -1.30361,2.56905 -0.46147,3.99011 0.58853,2.07401 -1.36244,4.0835 -3.39688,2.95729 -2.42572,-1.34433 -3.09012,1.50441 -2.881,3.32206 -0.2117,1.22864 3.03029,2.64072 0.53269,3.03383 -1.65558,-0.31127 -4.5936,-1.92811 -5.44307,0.34736 -1.23524,1.83504 3.20411,4.05236 -0.0473,4.26682 -1.69218,0.6322 -0.93717,3.15372 -2.77516,3.93137 -1.66422,1.60505 -3.00277,3.59366 -4.92192,4.91999 -0.82865,0.96264 -3.98768,-1.07357 -2.96051,1.23454 1.37563,1.48443 -0.35391,2.88409 -1.55071,3.41777 -0.59996,2.24954 1.87141,3.69397 3.8389,3.19762 1.33845,-0.1065 1.96379,-2.72065 3.19751,-0.6692 0.2586,0.31583 0.53814,0.66635 0.95695,0.7657 z"
@@ -1457,8 +1455,7 @@
              x="115.45523"
              y="436.66577"></tspan></text>
       </g>
-      <g
-         id="argentina"
+      <g country="argentina" [teg]="teg"
          inkscape:label="#g3493">
         <path
            id="path2238"
@@ -1499,8 +1496,7 @@
              x="-320.21759"
              y="326.62299"></tspan></text>
       </g>
-      <g
-         id="chile"
+      <g country="chile" [teg]="teg"
          inkscape:label="#g3519">
         <path
            sodipodi:nodetypes="cccccccccccccccscccccc"
@@ -1525,8 +1521,7 @@
              x="-319.68271"
              y="304.8204"></tspan></text>
       </g>
-      <g
-         id="uruguay"
+      <g country="uruguay" [teg]="teg"
          inkscape:label="#g3526">
         <path
            id="path2199"
@@ -1550,8 +1545,7 @@
              x="99.681587"
              y="444.84445"></tspan></text>
       </g>
-      <g
-         id="brasil"
+      <g country="brasil" [teg]="teg"
          inkscape:label="#g3572">
         <path
            sodipodi:nodetypes="cccccccccccccccccccccccccccccc"
@@ -1578,8 +1572,7 @@
              x="300.77542"
              y="304.99615"></tspan></text>
       </g>
-      <g
-         id="sahara"
+      <g country="sahara" [teg]="teg"
          inkscape:label="#g9653">
         <path
            id="path3239"
@@ -1605,8 +1598,7 @@
              x="428.77542"
              y="328.99615"></tspan></text>
       </g>
-      <g
-         id="espana"
+      <g country="espana" [teg]="teg"
          inkscape:label="#g4101">
         <path
            sodipodi:nodetypes="cccccccccccccccccccccccccc"
@@ -1634,8 +1626,7 @@
              x="376.23901"
              y="283.31232"></tspan></text>
       </g>
-      <g
-         id="francia"
+      <g country="francia" [teg]="teg"
          inkscape:label="#g4095">
         <path
            sodipodi:nodetypes="cccccccccccccccccccccccccc"
@@ -1663,8 +1654,7 @@
              x="97.840118"
              y="482.88528"></tspan></text>
       </g>
-      <g
-         id="italia"
+      <g country="italia" [teg]="teg"
          inkscape:label="#g4107">
         <path
            id="path3314"
@@ -1693,8 +1683,7 @@
              x="401.68158"
              y="-340.9039"></tspan></text>
       </g>
-      <g
-         id="alemania"
+      <g country="alemania" [teg]="teg"
          inkscape:label="#g3537">
         <path
            sodipodi:nodetypes="ccscccccccccccccccccccccccc"
@@ -1719,8 +1708,7 @@
              x="487.50287"
              y="-131.78134"></tspan></text>
       </g>
-      <g
-         id="egipto"
+      <g country="egipto" [teg]="teg"
          inkscape:label="#g3559">
         <path
            id="path3242"
@@ -1744,8 +1732,7 @@
              x="581.71594"
              y="104.02365"></tspan></text>
       </g>
-      <g
-         id="madagascar"
+      <g country="madagascar" [teg]="teg"
          inkscape:label="#g3548">
         <path
            sodipodi:nodetypes="cccccccccccccccccccccccccc"
@@ -1770,8 +1757,7 @@
              x="-241.76686"
              y="612.14264"></tspan></text>
       </g>
-      <g
-         id="oregon"
+      <g country="oregon" [teg]="teg"
          inkscape:label="#g9695">
         <path
            sodipodi:nodetypes="ccccccccccccccssssssssssssssssssssssssssssccccccsccc"
@@ -1801,8 +1787,7 @@
              x="-91.731949"
              y="260.01871"></tspan></text>
       </g>
-      <g
-         id="alaska"
+      <g country="alaska" [teg]="teg"
          inkscape:label="#g9701">
         <path
            id="path2932"
@@ -1829,8 +1814,7 @@
              x="80.31179"
              y="217.79546"></tspan></text>
       </g>
-      <g
-         id="groenlandia"
+      <g country="groenlandia" [teg]="teg"
          inkscape:label="#g3471">
         <path
            id="path2934"
@@ -1857,8 +1841,7 @@
              x="256.77542"
              y="146.99614"></tspan></text>
       </g>
-      <g
-         id="etiopia"
+      <g country="etiopia" [teg]="teg"
          inkscape:label="#g3567">
         <path
            id="path3256"
@@ -1887,8 +1870,7 @@
              x="486.77542"
              y="342.99615"></tspan></text>
       </g>
-      <g
-         id="rusia"
+      <g country="rusia" [teg]="teg"
          inkscape:label="#g4083">
         <path
            sodipodi:nodetypes="cssscsscccccccscccccccccccccssscssccsssccczscsc"
@@ -1916,8 +1898,7 @@
              x="469.91733"
              y="201.87833"></tspan></text>
       </g>
-      <g
-         id="nueva_york"
+      <g country="nueva_york" [teg]="teg"
          inkscape:label="#g4184">
         <path
            id="path3182"
@@ -1946,8 +1927,7 @@
              x="255.50258"
              y="117.79865"></tspan></text>
       </g>
-      <g
-         id="terranova"
+      <g country="terranova" [teg]="teg"
          inkscape:label="#g3459">
         <path
            sodipodi:nodetypes="ccccccccccccccccccccccccc"
@@ -1978,8 +1958,7 @@
              x="261.80927"
              y="97.495277"></tspan></text>
       </g>
-      <g
-         id="canada"
+      <g country="canada" [teg]="teg"
          inkscape:label="#g9713">
         <path
            id="path2269"
@@ -2006,8 +1985,7 @@
              x="164.77542"
              y="162.99614"></tspan></text>
       </g>
-      <g
-         id="polonia"
+      <g country="polonia" [teg]="teg"
          inkscape:label="#g4089">
         <path
            sodipodi:nodetypes="cccccccccccccccccccccccc"
@@ -2034,8 +2012,7 @@
              x="474.77542"
              y="240.99614"></tspan></text>
       </g>
-      <g
-         id="california"
+      <g country="california" [teg]="teg"
          inkscape:label="#g9683">
         <path
            sodipodi:nodetypes="ccccccccccccccccccccccccccccc"
@@ -2065,8 +2042,7 @@
              x="34.182438"
              y="291.15033"></tspan></text>
       </g>
-      <g
-         id="mexico"
+      <g country="mexico" [teg]="teg"
          inkscape:label="#g9689">
         <path
            id="path3191"
@@ -2096,8 +2072,7 @@
              x="308.39938"
              y="96.314629"></tspan></text>
       </g>
-      <g
-         id="labrador"
+      <g country="labrador" [teg]="teg"
          inkscape:label="#g3465">
         <path
            sodipodi:nodetypes="cccccccccccccccccccccccc"
@@ -2127,8 +2102,7 @@
              x="280.70682"
              y="75.980652"></tspan></text>
       </g>
-      <g
-         id="yukon"
+      <g country="yukon" [teg]="teg"
          inkscape:label="#g9707">
         <path
            id="path2942"
@@ -2154,8 +2128,7 @@
              x="122.25143"
              y="195.71907"></tspan></text>
       </g>
-      <g
-         id="peru"
+      <g country="peru" [teg]="teg"
          inkscape:label="#g9671">
         <path
            sodipodi:nodetypes="ccccccccssssssssssssscscccccscccccccccsccsc"
@@ -2182,8 +2155,7 @@
              x="257.5293"
              y="310.09955"></tspan></text>
       </g>
-      <g
-         id="colombia"
+      <g country="colombia" [teg]="teg"
          inkscape:label="#g9677">
         <path
            id="path4216"
@@ -2211,8 +2183,7 @@
              x="146.23967"
              y="354.07983"></tspan></text>
       </g>
-      <g
-         id="islandia"
+      <g country="islandia" [teg]="teg"
          inkscape:label="#g3578">
         <path
            sodipodi:nodetypes="ccccccccccccccccccccccscccc"
@@ -2240,8 +2211,7 @@
              x="324.77542"
              y="214.99615"></tspan></text>
       </g>
-      <g
-         id="suecia"
+      <g country="suecia" [teg]="teg"
          inkscape:label="#g3477">
         <path
            id="path3341"
@@ -2269,8 +2239,7 @@
              x="263.79382"
              y="379.82224"></tspan></text>
       </g>
-      <g
-         id="turquia"
+      <g country="turquia" [teg]="teg"
          inkscape:label="#g3554">
         <path
            sodipodi:nodetypes="cccscccccccccccscssccccccc"
@@ -2298,8 +2267,7 @@
              x="514.77539"
              y="252.99615"></tspan></text>
       </g>
-      <g
-         id="israel"
+      <g country="israel" [teg]="teg"
          inkscape:label="#g3560">
         <path
            id="path3545"
@@ -2327,8 +2295,7 @@
              x="346.83115"
              y="462.89786"></tspan></text>
       </g>
-      <g
-         id="arabia"
+      <g country="arabia" [teg]="teg"
          inkscape:label="#g3566">
         <path
            id="path3556"
@@ -2356,8 +2323,7 @@
              x="247.7764"
              y="551.93896"></tspan></text>
       </g>
-      <g
-         id="zaire"
+      <g country="zaire" [teg]="teg"
          inkscape:label="#g9647">
         <path
            id="path3248"
@@ -2383,8 +2349,7 @@
              x="454.77542"
              y="354.99615"></tspan></text>
       </g>
-      <g
-         id="sudafrica"
+      <g country="sudafrica" [teg]="teg"
          inkscape:label="#g3441">
         <path
            sodipodi:nodetypes="ccccccccccccccccccccccc"
@@ -2412,8 +2377,7 @@
              x="480.77542"
              y="374.99615"></tspan></text>
       </g>
-      <g
-         id="australia"
+      <g country="australia" [teg]="teg"
          inkscape:label="#g9635">
         <path
            sodipodi:nodetypes="cccccccccccccccccccccccccccccssssssc"
@@ -2441,8 +2405,7 @@
              x="601.91736"
              y="345.87833"></tspan></text>
       </g>
-      <g
-         id="sumatra"
+      <g country="sumatra" [teg]="teg"
          inkscape:label="#g3473">
         <path
            sodipodi:nodetypes="ccccccccccccccccccczz"
@@ -2467,8 +2430,7 @@
              x="566.39545"
              y="-293.01398"></tspan></text>
       </g>
-      <g
-         id="borneo"
+      <g country="borneo" [teg]="teg"
          inkscape:label="#g3480">
         <path
            sodipodi:nodetypes="cccccccccccccccccccccz"
@@ -2494,8 +2456,7 @@
              x="563.41547"
              y="-349.71838"></tspan></text>
       </g>
-      <g
-         id="java"
+      <g country="java" [teg]="teg"
          inkscape:label="#g9629">
         <path
            sodipodi:nodetypes="ccccccccccccczcccccz"
@@ -2523,8 +2484,7 @@
              x="9.2544708"
              y="695.03027"></tspan></text>
       </g>
-      <g
-         id="india"
+      <g country="india" [teg]="teg"
          inkscape:label="#g3527">
         <path
            sodipodi:nodetypes="csssscccccccccccccccccccc"
@@ -2552,8 +2512,7 @@
              x="73.248756"
              y="638.95111"></tspan></text>
       </g>
-      <g
-         id="malasia"
+      <g country="malasia" [teg]="teg"
          inkscape:label="#g3521">
         <path
            id="path3511"
@@ -2580,8 +2539,7 @@
              x="605.91736"
              y="251.87833"></tspan></text>
       </g>
-      <g
-         id="iran"
+      <g country="iran" [teg]="teg"
          inkscape:label="#g3537">
         <path
            id="path3438"
@@ -2608,8 +2566,7 @@
              x="496.99713"
              y="-264.83884"></tspan></text>
       </g>
-      <g
-         id="china"
+      <g country="china" [teg]="teg"
          inkscape:label="#g3515">
         <path
            sodipodi:nodetypes="ccccccccccccccccccccssssscsscsscccsccccssccsccccc"
@@ -2636,8 +2593,7 @@
              x="587.91736"
              y="219.87833"></tspan></text>
       </g>
-      <g
-         id="gobi"
+      <g country="gobi" [teg]="teg"
          inkscape:label="#g3543">
         <path
            sodipodi:nodetypes="ccscccccccccccccccccc"
@@ -2664,8 +2620,7 @@
              x="549.91736"
              y="221.87833"></tspan></text>
       </g>
-      <g
-         id="mongolia"
+      <g country="mongolia" [teg]="teg"
          inkscape:label="#g3509">
         <path
            id="path3447"
@@ -2691,8 +2646,7 @@
              x="533.91736"
              y="197.87833"></tspan></text>
       </g>
-      <g
-         id="siberia"
+      <g country="siberia" [teg]="teg"
          inkscape:label="#g3503">
         <path
            sodipodi:nodetypes="ccccccccccccccccczcccccccscc"
@@ -2720,8 +2674,7 @@
              x="529.91736"
              y="175.87833"></tspan></text>
       </g>
-      <g
-         id="aral"
+      <g country="aral" [teg]="teg"
          inkscape:label="#g4179">
         <path
            sodipodi:nodetypes="cssccccsccccsscccscccc"
@@ -2747,8 +2700,7 @@
              x="372.79181"
              y="-365.21362"></tspan></text>
       </g>
-      <g
-         id="tartaria"
+      <g country="tartaria" [teg]="teg"
          inkscape:label="#g3487">
         <path
            sodipodi:nodetypes="ccczzscccccsccccccccccccc"
@@ -2776,8 +2728,7 @@
              x="314.74429"
              y="-428.7789"></tspan></text>
       </g>
-      <g
-         id="tamir"
+      <g country="tamir" [teg]="teg"
          inkscape:label="#g3493">
         <path
            id="path3412"
@@ -2804,8 +2755,7 @@
              x="304.81717"
              y="468.30652"></tspan></text>
       </g>
-      <g
-         id="kamchatka"
+      <g country="kamchatka" [teg]="teg"
          inkscape:label="#g4113">
         <g
            id="g3499">
@@ -2834,8 +2784,7 @@
              x="468.71616"
              y="353.50552"></tspan></text>
       </g>
-      <g
-         id="japon"
+      <g country="japon" [teg]="teg"
          inkscape:label="#g3487">
         <path
            sodipodi:nodetypes="ccccccccccccccccccccccc"
