@@ -5,12 +5,16 @@ import { FormsModule } from "@angular/forms";
 import { AppComponent } from './app.component';
 import { MapaComponent } from './mapa.component';
 import { CountryComponent } from './country.component';
+import { CountryInfoComponent } from './countryInfo.component';
+import { PlayerNameComponent } from './playerName.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MapaComponent,
     CountryComponent,
+    CountryInfoComponent,
+    PlayerNameComponent,
   ],
   imports: [
     BrowserModule,

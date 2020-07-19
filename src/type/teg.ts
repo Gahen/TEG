@@ -128,7 +128,7 @@ export class Teg {
     }
     let countryTo = this.extendCountry(this.currentCountryTo);
     let countryFrom = this.extendCountry(this.currentCountryFrom);
-    return p && p.hasCountry(countryFrom) && p.hasCountry(countryFrom) && countryTo.limitsWith(countryFrom) && (this.state === gameState.regroup || this.state === gameState.attack);
+    return p && p.hasCountry(countryTo) && p.hasCountry(countryFrom) && countryTo.limitsWith(countryFrom) && (this.state === gameState.regroup || this.state === gameState.attack);
   }
 
   attempAction(q: string) {
@@ -312,14 +312,10 @@ export class Teg {
     this.checkIfWon();
 
     if (this.pendingPlayers.length === 0) {
-      if (this.state !== gameState.attack) {
-        this.pendingPlayers = this.players.slice(0);
-      } else {
-        this.pendingPlayers = this.players.slice(1);
-        this.pendingPlayers.push(this.players[0]);
+      this.pendingPlayers = this.players.slice(1);
+      this.pendingPlayers.push(this.players[0]);
 
-        this.players = this.pendingPlayers.slice(0);
-      }
+      this.players = this.pendingPlayers.slice(0);
       this.nextState();
     }
     this.currentPlayer = this.pendingPlayers.shift();

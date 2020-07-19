@@ -1,3 +1,6 @@
+$info-color: blue;
+$action-color: green;
+
 .browsehappy {
   margin: 0.2em 0;
   background: #ccc;
@@ -87,53 +90,31 @@ body {
   }
 }
 
-
-.blue {
-  color: blue;
-}
-.green {
-  color: green;
-}
-.red {
-  color: red;
-}
-.yellow {
-  color: #E4E416;
-}
-.pink {
-  color: pink;
-}
-.black {
-  color: black;
-}
-
 #juego {
   position:relative;
 }
 
+.action {
+  display: flex;
+  border: 1px solid $action-color;
+}
+
 .interface {
+  height: 200px;
+
+  .player-info, .player-cards {
+    display: flex;
+    border: 1px solid $info-color;
+    p {
+      box-sizing: content-box;
+      width: 150px;
+    }
+  }
   .middle {
-    width: 200px;
-    margin: auto;
-    position: absolute;
-    left: 50%;
-    margin-left: -100px;
-    z-index: 1;
   }
   .left {
-    position: absolute;
-    top: 40px;
-    left: 10px;
-    z-index: 1;
-    opacity: 0.7;
   }
-
   .right {
-    position: absolute;
-    top: 40px;
-    right: 10px;
-    z-index: 1;
-    opacity: 0.7;
   }
 }
 

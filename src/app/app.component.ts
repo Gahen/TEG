@@ -3,6 +3,7 @@ import { Teg } from "src/type/teg"
 import {Color} from 'src/type/color';
 import {gameState} from 'src/type/states';
 import {allCardTypes, ICard} from 'src/type/card';
+import {CountryId} from 'src/type/country';
 
 const isColor = (color: Color | string): color is Color => Object.values(Color).some(v => v === color);
 
@@ -23,6 +24,11 @@ export class AppComponent {
     if (isColor(this.newPlayerColor)) {
       this.TEG.addPlayer(this.newPlayerColor as Color, this.newPlayerName);
     }
+  }
+  //
+  // Initially used to get card names
+  getCountryName(countryId: CountryId) {
+    return this.TEG.countries.find((c) => c.id === countryId).name;
   }
 
   canTrade3Cards() {
